@@ -1,6 +1,7 @@
 import sys
 import os
 import codecs
+import string
 print('''
 universal rotational cipher brute forcing tool
 
@@ -14,8 +15,7 @@ usage : python brute.py dec '1'
 # a1 = 'dec'
 # a2 = 123
 
-#use the maketrans function
-#  result.maketrans('ABC','BCD')
+
 
 def decrypt_alpha(message, base, offset):
     result = ""
@@ -43,17 +43,20 @@ def decrypt_dec(digits):
     return result
 
 
+#use the maketrans function
+#  result.maketrans('ABC','BCD')
 def decrypt_caesar(string): # works only with letter
     result = ''
     offset = 26
-    for char in string:
-        if char not in string:
-            result += char
-            continue
-    index = char.find(string)
-    result +=  str(((index) - 3 )   % offset ) # because it's rot5
+    #going to transform all the char in the first field into the the char at the same index into the second field
+    caesar_table =  string.maketrans("abcdefghijklmnopqrstuvwxyz", "defghijklmnopqrstuvwxyzabc")
+    # for char in string:
+    #     if char not in string:
+    #         result += char
+    #         break
+    #     result += chr((ord(char) - 3 )   % offset ) # because it's rot3
 
-    return result
+    return string.translate(caesar_table)
 
 if len(sys.argv) < 1 :
     print("not enough argument you need to specify the type of cipher an the message to decrypt")
@@ -68,7 +71,7 @@ else :
     if sys.argv[1] == "all" :
         print(str(decrypt_alpha(sys.argv[2], 33, 94)))
     if sys.argv[1] == "caesar":
-        print(str(decrypt_caesar(sys.argv[2])))
+        print((decrypt_caesar(sys.argv[2])))
 #chr (base +(ord(letter)-base) % offset)
 #  base Offset
 #    97 26
