@@ -14,13 +14,14 @@ usage : python brute.py dec '1'
 # a1 = 'dec'
 # a2 = 123
 
-#uese the maketrans function
-# result.maketrans('ABC','BCD')
+#use the maketrans function
+#  result.maketrans('ABC','BCD')
 
 def decrypt_alpha(message, base, offset):
     result = ""
+    #+1 it's to fix the problem of that produce a rotation but it miss one char to rotate for example i execpt for abc a result of nop and if i don't had the +1 i had mno
     for letter in message:
-        result += chr(base + (ord(letter) + base ) % offset)
+        result += chr(base + (ord(letter) + base +1 ) % offset )
     return result
 
 def decrypt_dec(digits):
@@ -38,7 +39,7 @@ def decrypt_dec(digits):
             continue
         index = digits.find(number)
         result +=  str(((index) - 5 )   % offset ) # because it's rot5
-
+# idk if i need to add +1 here that equivault to -4 to jump through five digit instead of 4 like for 123 to got 678 instead of 567
     return result
 
 

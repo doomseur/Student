@@ -21,6 +21,41 @@ syntax : credit_card_verifier mode_1 card_number
 
 # /0/1/2/3/4/.../x/
 # card number...checksum
+# Nested dictionaires of card provider
+card_provider = {"American_Express" : {"IIN" :"34" "37", "length " : 15},
+                  "Amex" : {},
+                  "amex" : {},
+                  "american-express" : {},
+                  "american_express" : {} ,
+                  "Diners_Club-International" : {"IIN" :"36", "length " : 14 },
+                  "diners_club-International" : {"IIN" :"36", "length " : 14 },
+                  "Diners_Club-Carte_Blanche" : {"IIN" :"300 " "301 " "302 " "303 " "304 " "305", "length " : 14 },
+                  "Diners_Club-USA&Canada" : {"IIN" :"54", "length " : 16 },
+                  # "diners_club-usa&Canada" : {"IIN" :"", "length " : },
+                  # "Discover" : {"IIN" :"6011, 622126 to 622925" "622126"
+                  #                      "644" "645" "646" "647" "648" "649" "65", "length " : 16-19  },
+                  # "discover" : {"IIN" :"", "length " : },
+                  "InstaPayment" : {"IIN" :"637 " "638 " "639 ", "length " : 16},
+                  # "JCB" : {"IIN" :"3528 to 3589", "length " : "16" "19" },
+                  "Maestro" : {"IIN" :"5018 " "5020 " "5038 " "5893 " "6304 " "6759 " "6761 " "6762 " "6763 ", "length " : "16" "19" },
+                  "maestro" : {"IIN" :"5018" "5020" "5038" "5893" "6304" "6759" "6761" "6762" "6763", "length " : "16" "19" },
+                  "MasterCard" : {"IIN" :"51" "52" "53" "54" "55" "222100-272099", "length " : 16},
+                  "mastercard" : {"IIN" :"51" "52" "53" "54" "55" "222100-272099", "length " : 16},
+
+                  "Visa" : {"IIN" :"4", "length " :  "13" "16" "19"},
+                  "visa" : {"IIN" :"4", "length " :  "13" "16" "19"},
+
+                  "Visa_Electron" : {"IIN" :"4026" "417500" "4508" "4844" "4913" "4917", "length " :  16}
+                 }
+
+
+# the loop associated for is
+# for key, value in card_provider.items():
+#     print("the key is " + key + "and the value associated is "+ value  + "/n")
+for dict in card_provider:
+    for key in dict:
+     print("the key is " + key + "and the value associated is ")# + value  + "/n")
+
 
 #to check the lenght of the credit card number (with the cecksum | all digit)
 def checklength(ccnumber):
@@ -77,7 +112,7 @@ def generate(vendor_name):
     if vendor_name == "AmericanExpress" or "Amex" or "amex":
         ccNumber[0] = '3'
         ccNumber[1] = '4'
-        for i in range(2,15):
+        # for i in range(2,15):
 
 
 if len(sys.argv) > 1:
