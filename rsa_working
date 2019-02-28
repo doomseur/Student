@@ -1,0 +1,33 @@
+where p and q are two prime number
+low common multiple equal to ppcm in french 
+
+P*Q = n
+
+e (encryption key)
+d (decryption key)
+c (cipher text)
+c = m^e mod n
+in python pow(m,e,n) m power of e modulus n
+m = c^d mod n 
+in python pow(c,d,n)
+
+the way to break rsa is to peak p and q to closed to each other or to have e and d to low .
+
+dp 
+dq
+pinv (inv for invert)
+qinv 
+
+this value is calculated when you search to calculate e and d 
+so that speed up the decryption process 
+
+
+
+# m1 = c**dp (mod p)
+# m2 = c**dq (mod q )
+# h = qinv (m1 - m2) mod p
+# m = m2 - h
+# m = c*d  % p*q
+
+
+factordb.com
