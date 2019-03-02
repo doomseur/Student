@@ -54,9 +54,10 @@ q = 2351669556566096325024284697509403130957234896290003282795853437424811466150
 # qinv = q**-1 (mod p )
 # m = c**dp (mod p)
 # m2 = q**-1 ( mod q)
-# d =  dp  %  (p-1)
-# d = dp - (% p -1 )
-# d = dq % q/1
+###############
+# d =  dp  %  (p-1) (wrong)
+# d = dp - (% p -1 ) (wrong)
+# d = dq % q/1       (wrong)
 ############### notes that i take from mark
 # m1 = c**dp (mod p)
 # m2 = c**dq (mod q )

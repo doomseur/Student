@@ -27,7 +27,7 @@ m = string2int(message)
 ciphertext = pow(m, e, n)    ## encrypt
 print (ciphertext)
 
-## ----- decrypt cuphertext then convert number back to a string
+## ----- decrypt ciphertext then convert number back to a string
 decrypted = pow(ciphertext, d, n)   ## decrypt
 plaintext = int2string(decrypted)
 print (plaintext)
