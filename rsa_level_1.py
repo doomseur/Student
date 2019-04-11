@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 ## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
 ## openssl genrsa -out mykey.pem
 ## openssl rsa -in mykey.pem -pubout > mykey.pub
@@ -28,7 +29,7 @@ ciphertext = pow(m, e, n)    ## encrypt
 print (ciphertext)
 
 ## ----- decrypt ciphertext then convert number back to a string
-decrypted = pow(ciphertext, d, n)   ## decrypt
+decrypted = pow(ciphertext, d, n)   ## decrypt // take the ciphertext power d and modulus n
 plaintext = int2string(decrypted)
 print (plaintext)
 

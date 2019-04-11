@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 ## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
 ## openssl genrsa -out mykey.pem
 ## openssl rsa -in mykey.pem -pubout > mykey.pub
@@ -8,9 +9,9 @@ from Crypto.PublicKey import RSA
 
 f = open('mykey2','r')
 privKeyObj =  RSA.importKey(f) # generate the RSA key object
+# that allow to get each variable we need
 
-
-rsa_key_var_n = privKeyObj.n
+rsa_key_var_n = privKeyObj.n # get access to the variable of the private key
 rsa_key_var_e = privKeyObj.e
 rsa_key_var_d = (privKeyObj.d)
 rsa_key_var_p = (privKeyObj.p)

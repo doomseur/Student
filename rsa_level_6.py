@@ -12,7 +12,7 @@ def string2int(my_str):
 def int2string(my_int):
     return binascii.unhexlify(format(my_int, "x").encode("utf-8")).decode("utf-8")
 
-
+##################################################################################
 def extended_gcd(aa, bb):
     lastremainder, remainder = abs(aa), abs(bb)
     x, lastx, y, lasty = 0, 1, 1, 0

@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 ## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
 ## openssl genrsa -out mykey.pem
 ## openssl rsa -in mykey.pem -pubout > mykey.pub
