@@ -4,7 +4,8 @@
 ## -------------------------------------------------------------------------
 
 ## To run type python rsa.py from the commandline (assuming you've pythonh installed
-import binascii				
+import binascii
+import gmpy2
 
 def string2int(my_str):
     return int(binascii.hexlify(my_str), 16)
@@ -12,7 +13,7 @@ def string2int(my_str):
 def int2string(my_int):
     return binascii.unhexlify(format(my_int, "x").encode("utf-8")).decode("utf-8")
 
-
+###
 def extended_gcd(aa, bb):
     lastremainder, remainder = abs(aa), abs(bb)
     x, lastx, y, lasty = 0, 1, 1, 0
@@ -35,6 +36,14 @@ e = 3
 ciphertext = 145069245024457407970388457302568525045688441508350620445553303097210529802020156842534271527464635050860748816803790910853366771838992303776518246009397475087259557220229739272919078824096942593663260736405547321937692016524108920147672998393440513476061602816076372323775207700936797148289812069641665092971298180210327453380160362030493
 
 # ## --------------------------------------------------------------------------
+# https://www.dcode.fr/cube-root
+# need the ciper in the first field and put 1000 as the aproximate value because 3
+# and use the exact value
+# https://www.rapidtables.com/convert/number/decimal-to-hex.html
+# https://www.rapidtables.com/convert/number/hex-to-ascii.html
+# the flag is : We always need to watch the size of our message
+# hint : what happens if M^e < n?
+# https://en.wikipedia.org/wiki/RSA_(cryptosystem)
 # to get n compute p and q
 # n = p*q
 #factordb.com
@@ -45,6 +54,7 @@ q = 2351669556566096325024284697509403130957234896290003282795853437424811466150
 
 
 # to compute qinv
+# qinv = pow(q,-1,p)
 # qinv =  q**-1  mod p
 
 # qinv = pow(q,-1,p)
@@ -86,7 +96,7 @@ q = 2351669556566096325024284697509403130957234896290003282795853437424811466150
 # m = c*d  % p*q
 # d * e mod (q-1)(p-1) = 1 that is the modular inverse
 # modinv(e,(p-1)(q-1) that do e mod (q-1)(p-1) = d
-d = modinv(e,(q-1)*(p-1))
+# d = modinv(e,(q-1)*(p-1))
 
 # from Crypto.PublicKey import RSA
 # from Crypto.Util import asn1
@@ -113,12 +123,22 @@ d = modinv(e,(q-1)*(p-1))
 # rsa_key_var_q = (privKeyObj.q)
 # rsa_key_var_u = (privKeyObj.u)
 
+
+# cube_root = gmpy2.root(ciphertext,1000 )
+# print(cube_root)
+# str(cube_root).encode("hex")
+# str(cube_root).decode("ascii")
+# print(str(cube_root))
+
 ## ----- decrypt cuphertext then convert number back to a string
 # decrypted = pow(ciphertext, rsa_key_var_d, rsa_key_var_n)   ## decrypt
-decrypted  = pow(ciphertext,d,n)
-plaintext = int2string(decrypted)
-print (plaintext)
-
+# decrypted  = pow(ciphertext,d,n)
+# plaintext = int2string(decrypted)
+# print (plaintext)
+# print(int2string(gmpy2.iroot(ciphertext,e)))
+#we do the e root of the cipher text
+print(int(gmpy2.iroot(ciphertext,e)[0]))
+print(int2string(int(gmpy2.iroot(ciphertext,e)[0])))
 # print("the rsa key variable n is  : " + str(rsa_key_var_n))
 # print("the rsa key variable e is  : " + str(rsa_key_var_e))
 # print("the rsa key variable d is  : " + str(rsa_key_var_d))
