@@ -1,15 +1,18 @@
-#!/usr/bin/python3
-## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
-## openssl genrsa -out mykey.pem
-## openssl rsa -in mykey.pem -pubout > mykey.pub
-## -------------------------------------------------------------------------
+#!/usr/bin/python2
 
-## To run type python rsa.py from the commandline (assuming you've pythonh installed
+# source
+#https://stackoverflow.com/questions/21327491/using-pycrypto-how-to-import-a-rsa-public-key-and-use-it-to-encrypt-a-string
+#https://pycryptodome.readthedocs.io/en/latest/src/public_key/rsa.html
+
+# this program import the private objectkey from mykey2
+# and read variables from the generate privatekey object.
+
 from Crypto.PublicKey import RSA
 
-f = open('mykey2','r')
+f = open('rsa3_mykey2','r')
 privKeyObj =  RSA.importKey(f) # generate the RSA key object
 # that allow to get each variable we need
+f.close()
 
 rsa_key_var_n = privKeyObj.n # get access to the variable of the private key
 rsa_key_var_e = privKeyObj.e

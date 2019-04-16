@@ -1,9 +1,11 @@
-## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
-## openssl genrsa -out mykey.pem
-## openssl rsa -in mykey.pem -pubout > mykey.pub
-## -------------------------------------------------------------------------
+#!/usr/bin/python2
 
-## To run type python rsa.py from the commandline (assuming you've pythonh installed
+# according to the https://en.wikipedia.org/wiki/RSA_(cryptosystem) example of RSA encryption we can compute d.
+# the modular multiplicative inverse  of e mod (q-1)(p-1)
+# by  applying the Extended Euclidean Algorithm we are able to compute d
+# by factorizing n we found p and q (factordb.com is used to get the value).
+# i am able to decrypt the cipher text.
+
 import binascii				
 
 def string2int(my_str):
@@ -40,47 +42,6 @@ ciphertext = 8770476275039645635278598540562418532865487102662612919425439558181
 p = 3133337
 q = 25478326064937419292200172136399497719081842914528228316455906211693118321971399936004729134841162974144246271486439695786036588117424611881955950996219646807378822278285638261582099108339438949573034101215141156156408742843820048066830863814362379885720395082318462850002901605689761876319151147352730090957556940842144299887394678743607766937828094478336401159449035878306853716216548374273462386508307367713112073004011383418967894930554067582453248981022011922883374442736848045920676341361871231787163441467533076890081721882179369168787287724769642665399992556052144845878600126283968890273067575342061776244939
 
-
-# to compute qinv
-# qinv =  q**-1  mod p
-
-# qinv = pow(q,-1,p)
-# try to compute d (but it's not possible)
-# dp = d (mod p - 1 )
-# dq = d (mod q - 1 )
-# qinv = q**-1 (mod p )
-# m = c**dp (mod p)
-# m2 = q**-1 ( mod q)
-###############
-# d =  dp  %  (p-1) (wrong)
-# d = dp - (% p -1 ) (wrong)
-# d = dq % q/1      (wrong)
-############### notes that i take from mark
-# m1 = c**dp (mod p)
-# m2 = c**dq (mod q )
-# h = qinv (m1 - m2) mod p
-# m = m2 - h
-# and it's not a good way to search d because we can't get d
-################################################
-
-# print("the value of d is  : "+ str(d) + "\n")
-## ----- convert message to an int then encrypt ------------
-# m = string2int(message)
-# ciphertext = pow(m, e, n)    ## encrypt
-# print (ciphertext)
-# pow(ciphertext,d,n)
-# modulus is always  the last things to be interpreted
-
-# m1 = ciphertext**dp % p
-# m1 = pow(ciphertext,dp,p)
-# # m2 = ciphertext**dq % q
-# m2 = pow(ciphertext,dq,q)
-
-# h = qinv (m1 - m2)  % p
-# h =  qinv*(m1-m2) % p
-# m = m2 - h
-
-# m = c*d  % p*q
 # d * e mod (q-1)(p-1) = 1 that is the modular inverse
 # modinv(e,(p-1)(q-1) that do e mod (q-1)(p-1) = d
 d = modinv(e,(q-1)*(p-1))

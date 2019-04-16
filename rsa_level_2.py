@@ -1,10 +1,15 @@
-#!/usr/bin/python3
-## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
-## openssl genrsa -out mykey.pem
-## openssl rsa -in mykey.pem -pubout > mykey.pub
-## -------------------------------------------------------------------------
+#!/usr/bin/python2
 
-## To run type python rsa.py from the commandline (assuming you've pythonh installed
+
+# this program got there value from rsa1.txt
+# and using the the given cipher by doing the same things that in the first level we are able to recover the message.
+# it basically convert a string into a int crypt it with a rsa key
+# and decrypt it to display a message
+# to decrypt a message you have to compute it like
+# encrypted_message**d modulus n
+# that's how you decrypt rsa message.
+# by using the same value as the level 1
+
 import binascii				
 
 def string2int(my_str):

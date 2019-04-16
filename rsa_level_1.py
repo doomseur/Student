@@ -1,10 +1,24 @@
-#!/usr/bin/python3
+# to make sure you can run this script
+# install this
+# sudo apt-get install python-pip python-setuptools
+
+# this program got there value from rsa1.txt
+# this program is from moodle
+# it basically convert a string into a int crypt it with a rsa key
+# and decrypt it to display a message
+# to decrypt a message you have to compute it like
+# encrypted_message**d modulus n
+# that's how you decrypt rsa message.
+
 ## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
 ## openssl genrsa -out mykey.pem
 ## openssl rsa -in mykey.pem -pubout > mykey.pub
 ## -------------------------------------------------------------------------
 
 ## To run type python rsa.py from the commandline (assuming you've pythonh installed
+
+# the challenges is there : https://zerodays.ctfd.io/challenges
+
 import binascii				
 
 def string2int(my_str):

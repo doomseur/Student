@@ -1,10 +1,13 @@
-#!/usr/bin/python3
-## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
-## openssl genrsa -out mykey.pem
-## openssl rsa -in mykey.pem -pubout > mykey.pub
-## -------------------------------------------------------------------------
+#!/usr/bin/python2
 
-## To run type python rsa.py from the commandline (assuming you've pythonh installed
+# according to (hint) the wikipedia page  : https://en.wikipedia.org/wiki/RSA_(cryptosystem)
+# searching into the pages for efficient decryption
+# we got the formula for efficient decryption
+# m1 = c^dp mod p || m1 = (c**dp) % p
+# m2 = c^dq mod q || m2 = (c**dq) % q
+# according to the given value we are able to compute a fast decryption with dp and dq.
+
+
 import binascii				
 
 def string2int(my_str):
@@ -21,35 +24,12 @@ pinv = 5263012884919772068011047275044574836213989617663753182295432651742531168
 q = 177704742022668281567275022430710622044625631943464584783356816417678451913814558943536631037762187048467689046234818780661519865062083219860810518179422654892088803969419990517131405785258854547965943290573901682173757368660288706014607783317852866568116668579647747712013357379386510690231133643640946552973
 qinv = 125496020857340618196277467222560283660900711303887368456426113439542149083570089122371450654613560708642271914201563769861679957096301702280557251661400261492798741353567063566155829049341500619204353629584549900179004920653223519411783060452352992381122206770893349104129009388564667579089451723604618440661
 # ## --------------------------------------------------------------------------
-# to get n compute p and q
-n = p*q
-# try to compute d (but it's not possible)
-# dp = d (mod p - 1 )
-# dq = d (mod q - 1 )
-# qinv = q**-1 (mod p )
-# m = c**dp (mod p)
-# m2 = q**-1 ( mod q)
-###############
-# d =  dp  %  (p-1)  (wrong)
-# d = dp - (% p -1 )  (wrong)
-# d = dq % q/1  (wrong)
-############### notes that i take from mark
-# m1 = c**dp (mod p)
-# m2 = c**dq (mod q )
-# h = qinv (m1 - m2) mod p
-# m = m2 - h
-# and it's not a good way to search d because we can't get d
-################################################
+
 
 ciphertext =1388762168166138453533502616535682311951662267796048439821372408514940452694372071133694678245859456415197350818844276387350533386163112380861811751402336635782785232530966339596198327482130002361308263664042358292425147457255505567604410008496199212314343371169549624681927057257495930259138537298520078715021539399084541293912853620643211368004457657505213763568639450075510208834704577814321673791370846192405275347289307606311671974787456421561549138384739624650167355754827475547501943429992429550124101325788544890357396437738989658781888433583926568899431456535167649223812165614500609693719689242432567228419
 # modulus is always  the last things to be interpreted
-# m1 = ciphertext**dp % p
-m1 = pow(ciphertext,dp,p)
-# m2 = ciphertext**dq % q
-# h = qinv (m1 - m2)  % p
-# m = m2 - h
-
-# m = c*d  % p*q
+#m1 = pow(ciphertext,dp,p)
+m2 = pow(ciphertext,dq, q)
 
 
 from Crypto.PublicKey import RSA
@@ -68,7 +48,8 @@ rsa_key_var_q = (privKeyObj.q)
 rsa_key_var_u = (privKeyObj.u)
 
 ## ----- decrypt ciphertext then convert number back to a string
-plaintext = int2string(m1)
+# plaintext = int2string(m1)
+plaintext = int2string(m2)
 print (plaintext)
 
 
