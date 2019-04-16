@@ -1,0 +1,3 @@
+just by clinking on the hints you get the flag.
+
+ZD{Viewing hints will cost you marks. You've been warned!!!}
