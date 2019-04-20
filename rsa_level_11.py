@@ -1,6 +1,26 @@
+#!/usr/bin/python3
+
+# Heavily inspired from :
+# https://repl.it/repls/ScaredScarceTriggers
+
+
+# https://www.iacr.org/archive/crypto2003/27290027/27290027.pdf
+# https://www.ijser.org/researchpaper/Attack_on_RSA_Cryptosystem.pdf
+# http://honors.cs.umd.edu/reports/lowexprsa.pdf
+# https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-90a.pdf
+
+
+# Theorem Howgrave-Graham
+# k bean unknown integer whichis not a multiple of  q
+# dp - 1 =k(p - 1)
+
+
+# The idea is that ed - k(N-p-q+1)=1 by definitions
+# d < phi(N) than its modInv(e,phi(n)), so k can't be bigger than e
+# set d' = (k*N + 1)/e
 
 import binascii
-import gmpy2
+import math
 
 def string2int(my_str):
     return int(binascii.hexlify(my_str), 16)
@@ -8,31 +28,29 @@ def string2int(my_str):
 def int2string(my_int):
     return binascii.unhexlify(format(my_int, "x").encode("utf-8")).decode("utf-8")
 
+#http://magma.maths.usyd.edu.au/calc/
 
 
-from functools import reduce
-def chinese_remainder(n, a):
-    sum = 0
-    prod = reduce(lambda a, b: a*b, n)
-    for n_i, a_i in zip(n, a):
-        p = prod // n_i
-        sum += a_i * mul_inv(p, n_i) * p
-    return sum % prod
+def extended_gcd(aa, bb):
+    """Extended Euclidean Algorithm,
+    from https://rosettacode.org/wiki/Modular_inverse#Python
+    """
+    lastremainder, remainder = abs(aa), abs(bb)
+    x, lastx, y, lasty = 0, 1, 1, 0
+    while remainder:
+        lastremainder, (quotient, remainder) = remainder, divmod(lastremainder, remainder)
+        x, lastx = lastx - quotient*x, x
+        y, lasty = lasty - quotient*y, y
+    return lastremainder, lastx * (-1 if aa < 0 else 1), lasty * (-1 if bb < 0 else 1)
 
-
-
-def mul_inv(a, b):
-    b0 = b
-    x0, x1 = 0, 1
-    if b == 1: return 1
-    while a > 1:
-        q = a // b
-        a, b = b, a%b
-        x0, x1 = x1 - q * x0, x0
-    if x1 < 0: x1 += b0
-    return x1
-
-# copied from : https://www.rosettacode.org/wiki/Chinese_remainder_theorem#Python_3.6 that implement the chinese remainder theorem.
+def modinv(a, m):
+    """Modular Multiplicative Inverse,
+    from https://rosettacode.org/wiki/Modular_inverse#Python
+    """
+    g, x, y = extended_gcd(a, m)
+    if g != 1:
+        raise ValueError
+    return x % m
 
 
 ## -------------------------------------------------------------------------
@@ -43,23 +61,21 @@ e = 65537
 dp = 152244367079401291358716469487584150991338743989392990770913626288139830903544366284978873842165797802924783266589136772176969547853810132758515251384877814239456989641537309467459189296399458554310236664344352802881532047849722063137221142352957646714675083505704164554173755971781242136342727195650051929435
 c = 12197258568853253547597040581799946041585986603548186383428773143700443084556162229874361765452507412066554533559769888691295815764576474732238999342288173330325352937584949613008563970193717161361539720499836980797409433259876708192396714875184109702115953317136419961350534704241826643935659625518719884048804599520100706583765280609694145787711412815948671377833129126071454424282099361050479569057271974367819833668852729889383791011872438269112628196219820580116434335242272832914188310014441732301910630472073299647433186769498080029754149537819245807726617816718620076398309880611122566595761613531977918779273
 
-# ## --------------------------------------------------------------------------
-# dP = (1/e) mod (p-1)
-# dQ = (1/e) mod (q-1)
-# qInv = (1/q) mod p
-# ## --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 
-# BigCipher =  [c1,c2,c3]
-# BigN = [n1,n2,n3]
-# BigE = [e1,e2,e3]
-# https://www.di-mgt.com.au/crt_rsa.html
-#https://di-mgt.com.au/crt.html
+b = pow(2,dp*e,N)-2
+p = math.gcd(N, b)
+q = N//p
+phi = (p-1)*(q-1)
+# The secret key d satisfied : ed = 1 mod phi(N).
+d = modinv(e, phi) # d*e congruent to  1 mod phi(n)
+m = pow(c,d,N)
+plaintext = int2string(m)
+print (plaintext)
 
-# chinese_result = chinese_remainder(BigN,BigCipher)
-cube_root = gmpy2.iroot(c,e)
-print(int(gmpy2.iroot(c,e)[0]))
 
-print( int2string( cube_root[0] ) )
-
+#https://gist.githubusercontent.com/Abdelkad3r/bf5d2b9d5f9daa48f34c24dfccbd3f56/raw/6a62dc73a7b04e6ced50af5c71e38984cae097e8/rsa.py
+#https://medium.com/bugbountywriteup/tokyowesterns-ctf-4th-2018-writeup-part-4-f64e1583b315
+# https://gitlab.com/jix/neca
 
 

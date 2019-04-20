@@ -1,12 +1,15 @@
-## Commands to generate keys with openssl from commandline.. not part of this pythonj code.
-## openssl genrsa -out mykey.pem
-## openssl rsa -in mykey.pem -pubout > mykey.pub
-## -------------------------------------------------------------------------
-
-## To run type python rsa.py from the commandline (assuming you've pythonh installed
+#!/usr/bin/python2
+#
+# A weakness of the RSA is Small encryption exponent. Described here : https://www.di-mgt.com.au/rsa_alg.html#weaknesses
+# Small encryption exponent
+#     If you use a small exponent like e=3 and send the same message to different recipients and
+#     just use the RSA algorithm without adding random padding to the message, then an eavesdropper could recover the plaintext.
+#  as descrbed here  :  https://www.di-mgt.com.au/crt.html#crackingrsa
+#  the implementation of the chinese remainder theorem, allow to crack the ciphertext.
+#
 import binascii
 import gmpy2
-import fractions
+
 def string2int(my_str):
     return int(binascii.hexlify(my_str), 16)
 
@@ -14,7 +17,7 @@ def int2string(my_int):
     return binascii.unhexlify(format(my_int, "x").encode("utf-8")).decode("utf-8")
 
 
-
+########################################################################################################################
 from functools import reduce
 def chinese_remainder(n, a):
     sum = 0
@@ -23,8 +26,6 @@ def chinese_remainder(n, a):
         p = prod // n_i
         sum += a_i * mul_inv(p, n_i) * p
     return sum % prod
-
-
 
 def mul_inv(a, b):
     b0 = b
@@ -36,10 +37,7 @@ def mul_inv(a, b):
         x0, x1 = x1 - q * x0, x0
     if x1 < 0: x1 += b0
     return x1
-
 # copied from : https://www.rosettacode.org/wiki/Chinese_remainder_theorem#Python_3.6 that implement the chinese remainder theorem.
-
-
 ## -------------------------------------------------------------------------
 
 e1 = 3
@@ -61,72 +59,9 @@ BigE = [e1,e2,e3]
 # m =  pow(BigCipher,1/BigE)
 # m =  pow(BigCipher,1/27) # 3*3*3
 
-# plus_grand_diviseur_commun = fractions.gcd(n1,n2)
-# print(plus_grand_diviseur_commun)
-# print(m)
-# M = gmpy2.root(BigN,1/BigE)
-# M= gmpy2.cbrt(BigCipher)
-# print(M)
-# ChangeHex(M)
-# print(str(M))
-# print(str(m).join().decode('hex'))
-# m, exact = gmpy2.root(BigCipher,1/BigE)
-# print(int2string(pow(BigCipher,1/BigE)))
-#used a library gmpy
-#4**3 square cube or cube root can be implemented with 4**1/3 (pow(4,1/3)
-# https://www.dcode.fr/cube-root
-# need the ciper in the first field and put 1000 as the aproximate value because 3
-# and use the exact value
-# https://www.rapidtables.com/convert/number/decimal-to-hex.html
-# https://www.rapidtables.com/convert/number/hex-to-ascii.html
-# the flag is : We always need to watch the size of our message
-# hint : what happens if M^e < n?
-# ciper = M^e mod n
-# https://en.wikipedia.org/wiki/RSA_(cryptosystem)
-# to get n compute p and q
-# n = p*q
-#factordb.com
-#found with facotdb the first number is p and the second is q
-#p =
-#q =
-# to compute qinv
-# qinv = pow(q,-1,p)
-# qinv =  q**-1  mod p
-
-# qinv = pow(q,-1,p)
-# dp = d (mod p - 1 )
-# dq = d (mod q - 1 )
-# qinv = q**-1 (mod p )
-# m = c**dp (mod p)
-# m2 = q**-1 ( mod q)
-
-# m1 = c**dp (mod p)
-# m2 = c**dq (mod q )
-# h = qinv (m1 - m2) mod p
-# m = m2 - h
-################################################
-# modulus is always  the last things to be interpreted
-
-# modinv(e,(p-1)(q-1) that do e mod (q-1)(p-1) = d
-#d = modinv(e,(q-1)*(p-1))
-# print(gmpy2.iroot(BigCipher,BigE))
-# mpz, b2ol =  gmpy2.iroot(BigCipher,BigE)
-# print(int2string((mpz)))
-# x = pow(c1,1,n1)
-# print(x)
-# print(int2string(x))
-
 chinese_result = chinese_remainder(BigN,BigCipher)
 cube_root = gmpy2.iroot(chinese_result,e1)
 print( int2string( cube_root[0] ) )
 
-# cube_root = gmpy2.iroot(c1,e1)[0]
-# print(cube_root)
-# print(int2string(cube_root))
-## ----- decrypt cuphertext then convert number back to a string
-# decrypted = pow(ciphertext, rsa_key_var_d, rsa_key_var_n)   ## decrypt
-# decrypted  = pow(ciphertext,d,n)
-# plaintext = int2string(decrypted)
-# print (plaintext)
 
 

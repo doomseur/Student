@@ -1,3 +1,12 @@
+#!/usr/bin/python2
+
+# as desbrided in the level 8 when the message is smaller than the modulus  (n)
+# and the encryption exponent (e) is small
+# a message can be recovered  by calculating the e root of the cipher text
+# in this level two cipher cipher is given one small cipher text ( cipher < n ) linked with a small exponent (e = 3)
+# it's easy for computer to compute the cube roots to recover the message.
+# that's what the programm do it used the second modulus and the second exponent en the second cipher to recover the flag.
+
 
 import binascii
 import gmpy2
@@ -48,13 +57,7 @@ c2 = 114701735113333878266712876790034211569296709618234612750176827967455594159
 
 
 # ## --------------------------------------------------------------------------
-# BigCipher =  [c1,c2,c3]
-# BigN = [n1,n2,n3]
-# BigE = [e1,e2,e3]
-#
-#
-# chinese_result = chinese_remainder(BigN,BigCipher)
-cube_root = gmpy2.iroot(c2,e2)
+cube_root = gmpy2.iroot(c2,e2) # create a tuple with (the decrypted cipher, a boolean to say if the calcul as worked or not)
 print(cube_root)
 print( int2string( cube_root[0] ) )
 # cube_root = gmpy2.iroot(c1,e1)

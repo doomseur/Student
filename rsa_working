@@ -3,31 +3,98 @@ low common multiple equal to ppcm in french
 
 P*Q = n
 
-e (encryption key)
-d (decryption key)
-c (cipher text)
+The public key is (n,e)
+the private key (d,p,q)
+Sometimes the private key is written as (n,d)
+
+
+    n is known as the modulus.
+    e is known as the public exponent or encryption exponent or just the exponent.
+    d is known as the secret exponent or decryption exponent.
+    c (cipher text)
+
 c = m^e mod n
 in python pow(m,e,n) m power of e modulus n
 m = c^d mod n 
 in python pow(c,d,n)
-
-the way to break rsa is to peak p and q to closed to each other or to have e and d to low .
-
-dp 
+dp
 dq
 pinv (inv for invert)
-qinv 
+qinv
+
+
+the way to break rsa is to peak p and q to closed to each other or to have e and d to low, or to have a message < to the modulus.
+#######################################################################################################################
+Weaknesses in RSA
+
+Small encryption exponent
+    If you use a small exponent like e=3 and send the same message to different recipients and
+    just use the RSA algorithm without adding random padding to the message, then an eavesdropper could recover the plaintext.
+    (using the chinese reminder theorem)
+
+Small encryption exponent and small message
+    If you use e=3 and just encrypt a small message m
+    without padding where m3<n then your ciphertext c can easily be broken
+    by simply computing its real cube root.
+    For example, if we have the public key (n,e)=(25777,3) and just encrypt the small message m=10 then the ciphertext is c=1000.
+    The secure properties of RSA encryption only work if me>n.
+    (by doing the eth root of the ciphertext)
+
+Using the same key for encryption and signing
+    Given that the underlying mathematics is the same for encryption and signing,
+     only in reverse, if an attacker can convince a key holder to sign an unformatted encrypted message using the same key then she gets the original.
+
+
+Using a common modulus for different users
+    Do not use the same modulus n with different (ei,di) pairs for different users in a group.
+     Given his own pair (e1,d1), user 1 can factorize the common n into p and q and hence compute the private exponents di of all the other users.
+
+Acting as an oracle
+    There are techniques to recover the plaintext if a user just blindly returns the RSA transformation of the input. So don't do that.
+
+
+
+###########################################
+to generate a rsa key pair :
+Select a value of e from 3,5,17,257,65537
+repeat
+   p ← genprime(k/2)
+until (pmode)≠1
+repeat
+   q ← genprime(k - k/2)
+until (qmode)≠1
+N ← pq
+L ← (p-1)(q-1)
+d ← modinv(e, L)
+return (N,e,d)
+###########################################
+
 
 this value is calculated when you search to calculate e and d 
 so that speed up the decryption process 
 
 
-
+# to get n compute p and q
+n = p*q
+# try to compute d (but it's not possible)
+# dp = d (mod p - 1 )
+# dq = d (mod q - 1 )
+# qinv = q**-1 (mod p )
+# m = c**dp (mod p)
+# m2 = q**-1 ( mod q)
+############### notes that i take from mark
 # m1 = c**dp (mod p)
 # m2 = c**dq (mod q )
 # h = qinv (m1 - m2) mod p
 # m = m2 - h
 # m = c*d  % p*q
-
+# m1 = ciphertext**dp % p
+# m2 = ciphertext**dq % q
+################################################
+phi = (p-1)(q-1)
+d = (1/e) mod phi
+# modinv(e,(p-1)(q-1) that do e mod (q-1)(p-1) = d
+d = modinv(e,(q-1)*(p-1))
 
 factordb.com
+https://www.di-mgt.com.au/rsa_alg.html
