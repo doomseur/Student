@@ -23,36 +23,24 @@ syntax : credit_card_verifier mode_1 card_number
 example : python credit_card_tool.py mode_1 1234567891013116
          
 ''')
-
+# https://www.freeformatter.com/credit-card-number-generator-validator.html
 # /0/1/2/3/4/.../x/
 # card number...checksum
 # Nested dictionaires of card provider
 card_provider = {"American_Express" : {"IIN" : ["34", "37"], "length" : ['15']},
-                  # "Amex" : {},
-                  # "amex" : {},
-                  # "american-express" : {},
-                  # "american_express" : {} ,
                   "Diners_Club-International" : {"IIN" : ["36"], "length" : ['14'] },
-                  "diners_club-International" : {"IIN" : ["36"], "length" : ['14'] },
                   "Diners_Club-Carte_Blanche" : {"IIN" :["300", "301", "302", "303", "304", "305" ], "length" : ['14'] },
                   "Diners_Club-USA&Canada" : {"IIN" :["54"], "length" : ['16'] },
                   "JCB" : {"IIN" : range(3528,3589+1), "length" : range(16,19+1)}, # more 1 to have the last value in the array
-                  # "diners_club-usa&Canada" : {"IIN" :"", "length " : },
-                  # "Discover" : {"IIN" :"6011, 622126 to 622925" "622126"
-                  #                      "644" "645" "646" "647" "648" "649" "65", "length " : 16-19  },
-                  # "discover" : {"IIN" :"", "length " : },
+                  "Discover" : {"IIN" : ["6011"] + range(622126, 622925+1) + [ "622126", "644", "645", "646", "647", "648", "649", "65"], "length" : range(16, 19+1)},
                   "InstaPayment" : {"IIN" : ["637", "638", "639"], "length " : ['16']},
-                  # "JCB" : {"IIN" :"3528 to 3589", "length " : "16" "19" },
                   "Maestro" : {"IIN" :["5018" ,"5020", "5038", "5893", "6304", "6759", "6761", "6762", "6763" ], "length" : ["16", "19"] },
-                  "maestro" : {"IIN" : ["5018", "5020", "5038", "5893", "6304", "6759", "6761", "6762", "6763"], "length" : ["16" "19"] },
                   "MasterCard" : {"IIN" :["51", "52", "53", "54", "55", "222100-272099"], "length" : ['16']},
-                 # "mastercard" : {"IIN" :"51" "52" "53" "54" "55" "222100-272099", "length " : 16},
-
                   "Visa" : {"IIN" :["4"], "length" :  ["16", "13"  ,"19"]},
-                  "visa" : {"IIN" :["4"], "length" :  ["16", "13" , "19"]},
-
                   "Visa_Electron" : {"IIN" :["4026", "417500", "4508" ,"4844", "4913", "4917"], "length" :  ['16']}
                  }
+maplist = ["American_Express", "Diners_Club-International", "Diners_Club-Carte_Blanche", "Diners_Club-USA&Canada", "JCB", "Discover",  "InstaPayment", "Maestro" ,"MasterCard", "Visa", "Visa_Electron"]
+
 
 
 #to check the lenght of the credit card number (with the cecksum | all digit)
@@ -80,7 +68,7 @@ def checkLuhn(ccNumber):
             digit = digit - 9
         # pour obtenir le check sum ajouter le chiffre a la sum
         sum = sum + digit
-    print (sum) # to debug
+    # print (sum) # to debug
     return (sum % 10 == 0 )
 
 
@@ -89,21 +77,16 @@ def checkLuhn(ccNumber):
 def checkVendor(ccNumber):
     vendor_num = ''
     for i in range(0,4): # the first four digits
-        vendor_num += vendor_num + ccNumber[i]
+        vendor_num +=  ccNumber[i]
+    print("the vendor num = " + str(vendor_num))
 
-    for IIN in card_provider.get('JCB').get('IIN') :
-        if vendor_num ==  IIN :
-            return  "The Vendor is JCB"
 
-    if vendor_num.__contains__('34') or vendor_num.__contains__('37'):
-        return "the vendor is American Exprres (Amex)"
+    for namevendor  in maplist : # browse each IIN number to find one is according with the vendor num
+        for i in range(0,card_provider[namevendor]['IIN'].__len__()): # get the length of the array IIN inside the dict nested
+            if vendor_num.__contains__(str(card_provider[namevendor]['IIN'][i])): #cast in string the IIN number and return the vendor of  the IIN according to the vendor num
+                return namevendor
 
-    if vendor_num.__contains__('51') or vendor_num.__contains__('52') or vendor_num.__contains__('53') or vendor_num.__contains__('54') or vendor_num.__contains__('55'):
-        return "The vendor is MasterCard"
-    if vendor_num[0] == '4':
-        return "This Card is a Visa Card"
-    if (vendor_num[0] == '5' and (vendor_num[1] =='0' or vendor_num[1] == '6' or vendor_num[1] == '7' or vendor_num[1] == '8') ) or vendor_num.__contains__('639') or (vendor_num[0] == '6' & vendor_num[1] == '7') :
-        return "Maestro "
+
 
 def generateLastPortion(ccNumber):
 
@@ -143,90 +126,107 @@ def generateLastPortion(ccNumber):
 
 
 def generate(vendor_name):
-    ccNumber = ''
-
-    if (vendor_name == "AmericanExpress" or "Amex" or "amex")  :
-        length_of_the_card = card_provider.get('American_Express').get("length")[0]
-        ccNumber = card_provider['American_Express'].get('IIN')[0]
+    # vendor_choice = ["Amex","Diners_Club-USA&Canada", "JCB"]
+    # optimisation
+    if vendor_name in maplist :
+        length_of_the_card= card_provider[vendor_name]['length'][0]
+        ccNumber = card_provider[vendor_name]['IIN'][0]
+        ccNumber = str(ccNumber)
         while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
-             choice = str(random.randint(0,9))
-             ccNumber += choice
-        print("this is the ccnumber to check the length " + ccNumber)
-        last_portion = generateLastPortion(ccNumber)
-        ccNumber = ccNumber + last_portion
-        return  ccNumber
-    elif (vendor_name == "Diners_Club-USA&Canada") :
-        length_of_the_card = card_provider.get('Diners_Club-USA&Canada').get("length")[0]
-        ccNumber = card_provider['Diners_Club-USA&Canada'].get('IIN')[0]
-        while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
-             choice = str(random.randint(0,9))
-             ccNumber += choice
-        print("this is the ccnumber to check the length " + ccNumber)
+                     choice = str(random.randint(0,9))
+                     ccNumber += choice
         last_portion = generateLastPortion(ccNumber)
         ccNumber = ccNumber + last_portion
         return  ccNumber
 
-    elif(vendor_name == "JCB" ):
-        length_of_the_card = card_provider.get('JCB').get("length")[0]
-        ccNumber = card_provider['JCB'].get('IIN')[0]
-        while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
-             choice = str(random.randint(0,9))
-             ccNumber += choice
-        print("this is the ccnumber to check the length " + ccNumber)
-        last_portion = generateLastPortion(ccNumber)
-        ccNumber = ccNumber + last_portion
-        return  ccNumber
+    #
+    # if vendor_name in vendor_choice:
+    #     if vendor_name == vendor_choice[0]:
+    #         if (vendor_name == "AmericanExpress" or "Amex" or "amex")  :
+    #             length_of_the_card = card_provider.get('American_Express').get("length")[0]
+    #             ccNumber = card_provider['American_Express'].get('IIN')[0]
+    #             while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
+    #                  choice = str(random.randint(0,9))
+    #                  ccNumber += choice
+    #             print("this is the ccnumber to check the length " + ccNumber)
+    #             last_portion = generateLastPortion(ccNumber)
+    #             ccNumber = ccNumber + last_portion
+    #             return  ccNumber
+    #     if vendor_name == vendor_choice[1]:
+    #         if (vendor_name == "Diners_Club-USA&Canada") :
+    #             length_of_the_card = card_provider.get('Diners_Club-USA&Canada').get("length")[0]
+    #             ccNumber = card_provider['Diners_Club-USA&Canada'].get('IIN')[0]
+    #             while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
+    #                  choice = str(random.randint(0,9))
+    #                  ccNumber += choice
+    #             print("this is the ccnumber to check the length " + ccNumber)
+    #             last_portion = generateLastPortion(ccNumber)
+    #             ccNumber = ccNumber + last_portion
+    #             return  ccNumber
+    #
+    # if vendor_name == vendor_choice[2]:
+    #     if(vendor_name == "JCB" ):
+    #         length_of_the_card = card_provider.get('JCB').get("length")[0]
+    #         ccNumber = card_provider['JCB'].get('IIN')[0]
+    #         ccNumber = str(ccNumber) # cast
+    #         while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
+    #              choice = str(random.randint(0,9))
+    #              ccNumber += choice
+    #         print("this is the ccnumber to check the length " + ccNumber)
+    #         last_portion = generateLastPortion(ccNumber)
+    #         ccNumber = ccNumber + last_portion
+    #         return  ccNumber
+    #
+    # elif (vendor_name == 'Visa' or 'visa') :
+    #     # length_of_the_card = card_provider.get('Visa',{}).get('length')
+    #     length_of_the_card = card_provider['Visa']['length'][0] # accessing by the syntax []
+    #     # length_of_the_card = card_provider.get('Visa'.get('length')[0] # accessing by the syntax .get
+    #     ccNumber = card_provider['Visa'].get('IIN')[0]
+    #     while(len(ccNumber) < int(length_of_the_card) - 4):# minus 3 to add the last portion
+    #          choice = str(random.randint(0,9))
+    #          ccNumber += choice
+    #     last_portion = generateLastPortion(ccNumber)
+    #     ccNumber = ccNumber + last_portion
+    #     return  ccNumber
+    #
+    # elif vendor_name == 'MasterCard':
+    #     length_of_the_card = card_provider.get('MasterCard').get("length")
+    #     ccNumber = card_provider['MasterCard'].get('IIN')[0]
+    #     while(len(ccNumber) < int(length_of_the_card) - 4):# minus 3 to add the last portion
+    #          choice = str(random.randint(0,9))
+    #          ccNumber += choice
+    #     last_portion = generateLastPortion(ccNumber)
+    #     ccNumber = ccNumber + last_portion
+    #     return  ccNumber
+    #
+    #
+    # elif (vendor_name == "Diners_Club-International")  :
+    #     length_of_the_card = card_provider.get('Diners_Club-International').get("length")[0]
+    #     ccNumber = card_provider['Diners_Club-International'].get('IIN')[0]
+    #     while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
+    #          choice = str(random.randint(0,9))
+    #          ccNumber += choice
+    #     print("this is the ccnumber to check the length " + ccNumber)
+    #     last_portion = generateLastPortion(ccNumber)
+    #     ccNumber = ccNumber + last_portion
+    #     return  ccNumber
+    #
+    # elif (vendor_name == "Diners_Club-Carte_Blanche")  :
+    #     length_of_the_card = card_provider.get('Diners_Club-International').get("length")[0]
+    #     ccNumber = card_provider['Diners_Club-International'].get('IIN')[0]
+    #     while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
+    #          choice = str(random.randint(0,9))
+    #          ccNumber += choice
+    #     print("this is the ccnumber to check the length " + ccNumber)
+    #     last_portion = generateLastPortion(ccNumber)
+    #     ccNumber = ccNumber + last_portion
+    #     return  ccNumber
 
-    elif (vendor_name == 'Visa' or 'visa') :
-        # length_of_the_card = card_provider.get('Visa',{}).get('length')
-        length_of_the_card = card_provider['Visa']['length'][0] # accessing by the syntax []
-        # length_of_the_card = card_provider.get('Visa'.get('length')[0] # accessing by the syntax .get
-        ccNumber = card_provider['Visa'].get('IIN')[0]
-        while(len(ccNumber) < int(length_of_the_card) - 4):# minus 3 to add the last portion
-             choice = str(random.randint(0,9))
-             ccNumber += choice
-        last_portion = generateLastPortion(ccNumber)
-        ccNumber = ccNumber + last_portion
-        return  ccNumber
-
-    elif vendor_name == 'MasterCard':
-        length_of_the_card = card_provider.get('MasterCard').get("length")
-        ccNumber = card_provider['MasterCard'].get('IIN')[0]
-        while(len(ccNumber) < int(length_of_the_card) - 4):# minus 3 to add the last portion
-             choice = str(random.randint(0,9))
-             ccNumber += choice
-        last_portion = generateLastPortion(ccNumber)
-        ccNumber = ccNumber + last_portion
-        return  ccNumber
-
-
-    elif (vendor_name == "Diners_Club-International")  :
-        length_of_the_card = card_provider.get('Diners_Club-International').get("length")[0]
-        ccNumber = card_provider['Diners_Club-International'].get('IIN')[0]
-        while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
-             choice = str(random.randint(0,9))
-             ccNumber += choice
-        print("this is the ccnumber to check the length " + ccNumber)
-        last_portion = generateLastPortion(ccNumber)
-        ccNumber = ccNumber + last_portion
-        return  ccNumber
-
-    elif (vendor_name == "Diners_Club-Carte_Blanche")  :
-        length_of_the_card = card_provider.get('Diners_Club-International').get("length")[0]
-        ccNumber = card_provider['Diners_Club-International'].get('IIN')[0]
-        while(len(ccNumber) < int(length_of_the_card) - 4):# minus 4 to add the last portion
-             choice = str(random.randint(0,9))
-             ccNumber += choice
-        print("this is the ccnumber to check the length " + ccNumber)
-        last_portion = generateLastPortion(ccNumber)
-        ccNumber = ccNumber + last_portion
-        return  ccNumber
 
 
 
 
-
-    return str(ccNumber) #ccNumber
+    return str("Error the vendor not found")
 
 if len(sys.argv) > 1:
     if sys.argv[1] == 'mode_1':
